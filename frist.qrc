@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/main_source">
+        <file>image/contact_green.png</file>
+        <file>image/myicon_1.png</file>
+        <file>image/wechat.png</file>
+        <file>image/Icon_head.png</file>
+        <file>image/Icon_logger.png</file>
+        <file>image/Icon_user.png</file>
+        <file>image/QQicon.ico</file>
+    </qresource>
+</RCC>

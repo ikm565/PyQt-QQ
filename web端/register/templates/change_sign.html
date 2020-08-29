@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="../static/sm2.js"></script>
+    <script src="../static/sm3.js"></script>
+    <script src="../static/js/utils/hex.js"></script>
+    <script src="../static/js/utils/byteUtil.js"></script>
+    <script src="../static/js/crypto/sm3-1.0.js"></script>
+    <script src="../static/js/utils/jquery-3.3.1.min.js"></script>
+    <script src="../static/js/ext/jsbn.js"></script>
+    <script src="../static/js/ext/jsbn2.js"></script>
+    <script src="../static/js/ext/ec.js"></script>
+    <script src="../static/js/ext/ec-patch.js"></script>
+    <script src="../static/js/ext/prng4.js"></script>
+    <script src="../static/js/ext/rng.js"></script>
+    <script src="../static/js/crypto/sm2-1.0.js"></script>
+
+
+    <script>
+        function reg_click(){
+
+<!--        new_password-->
+        var text = $("#newPassword").val();
+        var id = $("#id").val();
+        var dataBy1 = Hex.utf8StrToBytes(id);
+        var sm3 = new SM3Digest();
+        //
+        sm3.update(dataBy1,0,dataBy1.length);
+        var sm3Hash = sm3.doFinal();
+        var sm3HashHex1 = Hex.encode(sm3Hash,0,sm3Hash.length);
+        //
+        text = text + sm3HashHex1;
+        var dataBy = Hex.utf8StrToBytes(text);
+        //
+        var sm3 = new SM3Digest();
+        sm3.update(dataBy,0,dataBy.length);
+        var sm3Hash = sm3.doFinal();
+        var sm3HashHex = Hex.encode(sm3Hash,0,sm3Hash.length);
+        //
+        var timestamp = (new Date()).valueOf().toString();
+        timestamp = timestamp.substring(0, 10);
+        pubkey = 'B9C9A6E04E9C91F7BA880429273747D7EF5DDEB0BB2FF6317EB00BEF331A83081A6994B8993F3F5D6EADDDB81872266C87C018FB4162F5AF347B483E24620207'
+
+        //SM2加密
+        var sm22 = new SM2();
+        var sm2DataHex = Hex.utf8StrToHex(sm3HashHex+"*"+timestamp+"*"+id+"*"+"null");//转成byte数组
+        console.log(sm2DataHex)
+        var cipher = sm22.encrypt(pubkey,sm2DataHex);
+        $("#newPassword").val(cipher);
+
+<!--        sign-->
+        var timestamp = (new Date()).valueOf().toString();
+        var msg = timestamp.substring(0, 10);
+        console.log(msg);
+        var privkey = $("#verification").val();
+        console.log(privkey);
+        if(privkey == "" || privkey.length < 32){
+            alert("私钥为空或错误");
+        }
+        let sigValueHex2 = sm2.doSignature(msg, privkey, {
+            pointPool: [sm2.getPoint(), sm2.getPoint(), sm2.getPoint(), sm2.getPoint()],
+        });
+        console.log(sigValueHex2)
+        $("#verification").val(sigValueHex2);
+        document.form1.submit();
+       }
+    </script>
+
+    <script type = "text/javascript">
+        $(function(){
+            $("#lgb2").click(function(){
+                var file=$("#open")[0].files[0];
+        if(file.name.substr(-4).toLocaleLowerCase() != '.txt'){
+          alert("请上传格式为txt的文件！");
+         }
+         else//如果上传文件是txt文件
+         {
+          var reader=new FileReader;
+          reader.readAsText(file);
+          reader.onload=function(evt){
+          var data=evt.target.result;
+          $('#verification').val(data);
+          }
+         }
+                })
+        })
+    </script>
+
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>修改密码</title>
+    <style>
+       body{
+            background-color: rgb(217, 235, 250);
+        }
+
+        .text{
+
+            height: 320px;
+            width: 400px;
+            padding: 25px;
+            margin-top: 100px;
+            margin-left:20%;
+            border-radius: 25px;
+
+        }
+
+        .loginn{
+            background-color: white;
+            height: 400px;
+            width: 400px;
+            padding: 25px;
+            margin-top: -380px;
+            margin-left:60%;
+            border-radius: 25px;
+            box-shadow:  4px 4px 8px rgba(0, 0, 0,0.5);
+        }
+        .loginn>p{
+            margin-left: 40%;
+            margin-top: 10px;
+            color:black;
+            font-size: 20px;
+        }
+
+        .LOGB{
+            border-collapse: separate;
+            border-radius: 15px;
+            border: 1px solid rgb(167, 160, 160);
+            text-align: left;
+            width: 95%;
+            height: 30px;
+        }
+
+         .MINE{
+            font-size: 10px;
+            margin-bottom: 10%;
+            border-radius: 15px;
+            text-align: left;
+            width: 95%;
+            height: 30px;
+            margin-left: 15%;
+        }
+
+        #log1{
+            text-align: center;
+            width: 180px;
+            background-color: rgb(137, 202, 180);
+            margin-left: 10%;
+            border-radius: 25px;
+            outline: none;
+
+        }
+
+         .Flash_style{
+            font-size:20px;
+            color:red;
+            margin-left:65%;
+            margin-bottom:9%
+        }
+
+        .LOGE{
+            font-size: 10px;
+            margin-left: 35%;
+            margin-bottom: 10%;
+        }
+        .input2{
+            outline: none;
+            border: 0px;
+            margin-right: 20%;
+
+        }
+
+
+    </style>
+</head>
+<body>
+    <div class = "text">
+        <h1>
+            2019密码技术竞赛
+        </h1>
+
+    </div>
+
+
+
+
+    <div class="loginn">
+        <p>修改</p>
+        <form action="http://127.0.0.1:5000/changing2/", method="post">
+            <table class="LOGB" cellspacing="0">
+                <tr>
+                    <td>用户名:&nbsp;</td>
+                    <td><input type="text"  placeholder="账号" class="input2" name="username" id="id"></td>
+                </tr>
+
+            </table>
+            <br>
+            <table class="LOGB" cellspacing="0">
+                <tr>
+                    <td>新密码:&nbsp;</td>
+                    <td><input type="password"  placeholder="新密码" class="input2" name="repwd" id="newPassword"></td>
+                </tr>
+
+            </table>
+             <br>
+             <table class="LOGB" cellspacing="0">
+                <tr>
+                   <td>私钥文件:</td>
+                        <td><input type="password" style="border:0"class="input2" name = "verification" id="verification"></td>
+                        <td><span class="input-group-addon" id="captcha-btn" style="cursor: pointer;" >
+                            <span id = 'lgb2'>打开密钥文件</span></span></td>
+                        <input type="file" name="filename" id="open" style="border:0"/>
+                </tr>
+            </table>
+            <br>
+            <div class = "MINE">
+                <button id="log1" name = "button" value = "1" onclick="reg_click()">修改</button>
+            </div>
+
+            <div class="LOGE">
+                <p><a href="{{ url_for('loginin_html') }}">已有账号？请登录</a></p>
+            </div>
+            <div class="LOGE">
+                <p>通过密码修改？<a href="{{ url_for('change_html') }}">在此点击</a></p>
+            </div>
+
+        </form>
+
+    </div>
+    <div class="Flash_style">
+        <h2>{{ get_flashed_messages()[0] }}</h2>
+    </div>
+</body>
+</html>

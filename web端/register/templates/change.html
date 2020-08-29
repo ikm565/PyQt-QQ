@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!--
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <script type = "text/javascript">
+        $(function(){
+            $("#lgb2").click(function(){
+                var id = $("#id").val();
+                var email = $("#email").val();
+                $.getJSON("/sendcode/", {"id":id, "email":email}, function(data){
+                    console.log(data);
+                })
+            })
+        })
+    </script>
+
+    <script src="../static/js/utils/hex.js"></script>
+    <script src="../static/js/utils/byteUtil.js"></script>
+    <script src="../static/js/crypto/sm3-1.0.js"></script>
+    <script src="../static/js/utils/jquery-3.3.1.min.js"></script>
+    <script src="../static/js/ext/jsbn.js"></script>
+    <script src="../static/js/ext/jsbn2.js"></script>
+    <script src="../static/js/ext/ec.js"></script>
+    <script src="../static/js/ext/ec-patch.js"></script>
+    <script src="../static/js/ext/prng4.js"></script>
+    <script src="../static/js/ext/rng.js"></script>
+    <script src="../static/js/crypto/sm2-1.0.js"></script>
+    <script type="module">
+        import {BigInteger} from "../js/ext/jsb";
+        console.log(a);
+    </script>
+    <script>
+        function reg_click(){
+
+        var text = $("#newPassword").val();
+        var id = $("#id").val();
+        var dataBy1 = Hex.utf8StrToBytes(id);
+        var sm3 = new SM3Digest();
+        //
+        sm3.update(dataBy1,0,dataBy1.length);
+        var sm3Hash = sm3.doFinal();
+        var sm3HashHex1 = Hex.encode(sm3Hash,0,sm3Hash.length);
+        //
+        text = text + sm3HashHex1;
+        var dataBy = Hex.utf8StrToBytes(text);
+        //
+        var sm3 = new SM3Digest();
+        sm3.update(dataBy,0,dataBy.length);
+        var sm3Hash = sm3.doFinal();
+        var sm3HashHex = Hex.encode(sm3Hash,0,sm3Hash.length);
+        //
+        var timestamp = (new Date()).valueOf().toString();
+        timestamp = timestamp.substring(0, 10);
+        pubkey = 'B9C9A6E04E9C91F7BA880429273747D7EF5DDEB0BB2FF6317EB00BEF331A83081A6994B8993F3F5D6EADDDB81872266C87C018FB4162F5AF347B483E24620207'
+
+        //SM2加密
+        var sm2 = new SM2();
+        var sm2DataHex = Hex.utf8StrToHex(sm3HashHex+"*"+timestamp+"*"+id+"*"+"null");//转成byte数组
+        console.log(sm2DataHex)
+        var cipher = sm2.encrypt(pubkey,sm2DataHex);
+        $("#newPassword").val(cipher);
+
+
+        var text = $("#password").val();
+        var id = $("#id").val();
+        var dataBy1 = Hex.utf8StrToBytes(id);
+        var sm3 = new SM3Digest();
+        //
+        sm3.update(dataBy1,0,dataBy1.length);
+        var sm3Hash = sm3.doFinal();
+        var sm3HashHex1 = Hex.encode(sm3Hash,0,sm3Hash.length);
+        //
+        text = text + sm3HashHex1;
+        var dataBy = Hex.utf8StrToBytes(text);
+        //
+        var sm3 = new SM3Digest();
+        sm3.update(dataBy,0,dataBy.length);
+        var sm3Hash = sm3.doFinal();
+        var sm3HashHex = Hex.encode(sm3Hash,0,sm3Hash.length);
+        //
+        var timestamp = (new Date()).valueOf().toString();
+        timestamp = timestamp.substring(0, 10);
+        var waitH= sm3HashHex + timestamp;
+        //加时戳hash
+        waitHash = Hex.utf8StrToBytes(waitH);
+        var sm3 = new SM3Digest();
+        sm3.update(waitHash,0,waitHash.length);
+        var hashed = sm3.doFinal();
+        var sm3HashHexFinal = Hex.encode(hashed,0,hashed.length);
+        $("#password").val(sm3HashHexFinal);
+
+        document.form1.submit();
+       }
+    </script>
+-->
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>修改密码</title>
+    <style>
+       body{
+            background-color: rgb(217, 235, 250);
+        }
+
+        .text{
+
+            height: 320px;
+            width: 400px;
+            padding: 25px;
+            margin-top: 100px;
+            margin-left:20%;
+            border-radius: 25px;
+
+        }
+
+        .loginn{
+            background-color: white;
+            height: 450px;
+            width: 400px;
+            padding: 25px;
+            margin-top: -380px;
+            margin-left:60%;
+            border-radius: 25px;
+            box-shadow:  4px 4px 8px rgba(0, 0, 0,0.5);
+        }
+        .loginn>p{
+            margin-left: 40%;
+            margin-top: 10px;
+            color:black;
+            font-size: 20px;
+        }
+
+        .LOGB{
+            border-collapse: separate;
+            border-radius: 15px;
+            border: 1px solid rgb(167, 160, 160);
+            text-align: left;
+            width: 95%;
+            height: 30px;
+        }
+
+         .MINE{
+            font-size: 10px;
+            margin-bottom: 10%;
+            border-radius: 15px;
+            text-align: left;
+            width: 95%;
+            height: 30px;
+            margin-left: 15%;
+        }
+
+        #log1{
+            text-align: center;
+            width: 180px;
+            background-color: rgb(137, 202, 180);
+            margin-left: 10%;
+            border-radius: 25px;
+            outline: none;
+
+        }
+
+         .Flash_style{
+            font-size:20px;
+            color:red;
+            margin-left:65%;
+            margin-bottom:9%
+        }
+
+        .LOGE{
+            font-size: 10px;
+            margin-left: 35%;
+            margin-bottom: 10%;
+        }
+        .input2{
+            outline: none;
+            border: 0px;
+            margin-right: 20%;
+
+        }
+
+
+    </style>
+</head>
+<body>
+    <div class = "text">
+        <h1>
+            局域网通讯工具 by 刘畅
+        </h1>
+
+    </div>
+
+
+
+
+    <div class="loginn">
+        <p>修改</p>
+        <form action="http://127.0.0.1:5000/changing/", method="post">
+            <table class="LOGB" cellspacing="0">
+                <tr>
+                    <td>用户名:&nbsp;</td>
+                    <td><input type="text"  placeholder="账号" class="input2" name="username" id="id"></td>
+                </tr>
+
+            </table>
+            <br>
+           <table class="LOGB"  cellspacing="0" >
+                <tr>
+                    <td>原密码: </td>
+                    <td><input type="password" placeholder="原密码" class="input2" name="pwd" id="password"></td>
+                </tr>
+            </table>
+            <br>
+            <table class="LOGB" cellspacing="0">
+                <tr>
+                    <td>新密码:&nbsp;</td>
+                    <td><input type="password"  placeholder="新密码" class="input2" name="repwd" id="newPassword"></td>
+                </tr>
+
+            </table>
+            <br>
+            <!--
+             <table class="LOGB"   cellspacing="1">
+                <tr>
+                    <td>email:</td>
+                    <td><input type="text" maxlength="20" placeholder="邮箱" class="input2" name="email" id="email"></td>
+                </tr>
+
+            </table>
+                <br>
+             <table class="LOGB" cellspacing="0">
+                <tr>
+                   <td>验证码:</td>
+                        <td><input type="text" style="border:0"class="input2" name = "verification" id="verification"></td>
+                        <td><span class="input-group-addon" id="captcha-btn" style="cursor: pointer;" >
+                            <span id = 'lgb2'>获取验证码</span></span></td>
+                </tr>
+            </table>
+            <br>
+            -->
+            <div class = "MINE">
+                <button id="log1" name = "button" value = "1" onclick="reg_click()">修改</button>
+            </div>
+
+            <div class="LOGE">
+                <p><a href="{{ url_for('regist_html') }}">注册账号？请点击</a></p>
+            </div>
+             
+        </form>
+
+    </div>
+    <div class="Flash_style">
+        <h2>{{ get_flashed_messages()[0] }}</h2>
+    </div>
+</body>
+</html>

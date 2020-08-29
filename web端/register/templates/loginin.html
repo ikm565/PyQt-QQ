@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="../static/js/utils/hex.js"></script>
+    <script src="../static/js/utils/byteUtil.js"></script>
+    <script src="../static/js/crypto/sm3-1.0.js"></script>
+    <script src="../static/js/utils/jquery-3.3.1.min.js"></script>
+    <script src="../static/js/ext/jsbn.js"></script>
+    <script src="../static/js/ext/jsbn2.js"></script>
+    <script src="../static/js/ext/ec.js"></script>
+    <script src="../static/js/ext/ec-patch.js"></script>
+    <script src="../static/js/ext/prng4.js"></script>
+    <script src="../static/js/ext/rng.js"></script>
+    <script src="../static/js/crypto/sm2-1.0.js"></script>
+    <script type="module">
+		import {BigInteger} from "../js/ext/jsb";
+		console.log(a);
+	</script>
+    <script>
+        function reg_click(){
+        var text = $("#password").val();
+        var id = $("#id").val();
+        var dataBy1 = Hex.utf8StrToBytes(id);
+        var sm3 = new SM3Digest();
+        //
+        sm3.update(dataBy1,0,dataBy1.length);
+        var sm3Hash = sm3.doFinal();
+        var sm3HashHex1 = Hex.encode(sm3Hash,0,sm3Hash.length);
+        //
+        text = text + sm3HashHex1;
+        var dataBy = Hex.utf8StrToBytes(text);
+        //
+        var sm3 = new SM3Digest();
+        sm3.update(dataBy,0,dataBy.length);
+        var sm3Hash = sm3.doFinal();
+        var sm3HashHex = Hex.encode(sm3Hash,0,sm3Hash.length);
+        //
+        var timestamp = (new Date()).valueOf().toString();
+        timestamp = timestamp.substring(0, 10);
+        var waitH= sm3HashHex + timestamp;
+        //加时戳hash
+        waitHash = Hex.utf8StrToBytes(waitH);
+        var sm3 = new SM3Digest();
+        sm3.update(waitHash,0,waitHash.length);
+        var hashed = sm3.doFinal();
+        var sm3HashHexFinal = Hex.encode(hashed,0,hashed.length);
+        $("#password").val(sm3HashHexFinal);
+       }
+    </script>
+
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>登录页面</title>
+    <style>
+
+     body{
+            background-color: rgb(217, 235, 250);
+        }
+
+        .text{
+
+            height: 320px;
+            width: 400px;
+            padding: 25px;
+            margin-top: 100px;
+            margin-left:20%;
+            border-radius: 25px;
+
+        }
+
+        .loginn{
+            background-color: white;
+            height: 400px;
+            width: 400px;
+            padding: 25px;
+            margin-top: -380px;
+            margin-left:60%;
+            border-radius: 25px;
+            box-shadow:  4px 4px 8px rgba(0, 0, 0,0.5);
+        }
+        .loginn>p{
+            margin-left: 40%;
+            margin-top: 10px;
+            color:black;
+            font-size: 20px;
+        }
+
+        .LOGB{
+            border-collapse: separate;
+            border-radius: 15px;
+            border: 1px solid rgb(167, 160, 160);
+            text-align: left;
+            width: 95%;
+            height: 30px;
+        }
+
+         .MINE{
+            font-size: 10px;
+            margin-bottom: 10%;
+            border-radius: 15px;
+            text-align: left;
+            width: 95%;
+            height: 30px;
+            margin-left: 15%;
+        }
+
+        #log1{
+            text-align: center;
+            width: 180px;
+            background-color: rgb(137, 202, 180);
+            margin-left: 10%;
+            border-radius: 25px;
+            outline: none;
+
+        }
+
+        .Flash_style{
+            font-size:20px;
+            color:red;
+            margin-left:72%;
+            margin-bottom:9%
+        }
+
+        .LOGE{
+            font-size: 10px;
+            margin-left: 35%;
+            margin-bottom: 10%;
+        }
+        .input2{
+            outline: none;
+            border: 0px;
+            margin-right: 20%;
+
+        }
+
+    </style>
+</head>
+<body>
+     <div class = "text">
+        <h1>
+            2019密码技术竞赛
+        </h1>
+
+    </div>
+
+    <div class="loginn">
+        <p>登录</p>
+        <br>
+        <form name = "form1" action="http://127.0.0.1:5000/lsuccess/" method="post">
+            <table class="LOGB" cellspacing="0">
+                <tr>
+                    <td>用户名:&nbsp;</td>
+                    <td><input type="text"  placeholder="姓名" class="input2" name="username" id="id"></td>
+                </tr>
+
+            </table>
+            <br>
+           <table class="LOGB"  cellspacing="0" >
+                <tr>
+                    <td>密码: </td>
+                    <td><input type="password" placeholder="你的密码" class="input2" name="password" id="password"></td>
+                </tr>
+            </table>
+            <br>
+             <br>
+            <div class="MINE">
+                <button id="log1" name = "button" value = "1" onclick="reg_click()">登录</button>
+            </div>
+            <br>
+            <div class="LOGE">
+                <p>没有账号？<a href="{{ url_for('regist_html') }}">立即注册</a></p>
+
+            </div>
+            <div class="LOGE">
+                <p>修改密码？<a href="{{ url_for('change_html') }}">在此点击</a></p>
+            </div>
+        </form>
+
+    </div>
+    <div class="Flash_style">
+             <h>{{ get_flashed_messages()[0] }}</h>
+    </div>
+</body>
+</html>
